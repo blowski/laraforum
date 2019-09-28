@@ -22,13 +22,13 @@ class CreateThreadsTest extends TestCase
     /** @test */
     function an_authenticated_user_can_create_new_forum_threads()
     {
-        $this->actingAs($user = factory(User::class)->create());
+        $this->signIn();
 
-        $thread = factory(Thread::class)->raw();
-        $this->post('/threads/', $thread);
+        $thread = make(Thread::class);
+        $this->post('/threads/', $thread->toArray());
 
         $this->get('/threads/')
-             ->assertSee($thread['title'])
-             ->assertSee($thread['body']);
+             ->assertSee($thread->title)
+             ->assertSee($thread->body);
     }
 }
