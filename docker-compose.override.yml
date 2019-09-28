@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+
+    web:
+        build:
+            target: dev
+        ports:
+        - "8080:80"
+
+    app:
+        build:
+            target: dev
+        volumes:
+            - ~/.composer:/root/.composer:delegated
+        environment:
+            APP_ENV: dev
+            PHP_IDE_CONFIG: "serverName=app"
+
+    database:
+        environment:
+            MYSQL_ROOT_PASSWORD: laraform
+        ports:
+        - "42333:3306"
+        restart: always
