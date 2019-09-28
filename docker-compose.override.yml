@@ -14,7 +14,6 @@ services:
         volumes:
             - ~/.composer:/root/.composer:delegated
         environment:
-            APP_ENV: dev
             PHP_IDE_CONFIG: "serverName=app"
 
     database:

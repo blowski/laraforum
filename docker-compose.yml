@@ -20,8 +20,6 @@ services:
       - ./:/app:cached
     depends_on:
       - database
-    environment:
-      APP_ENV: prod
 
   database:
     image: mysql:5.7
