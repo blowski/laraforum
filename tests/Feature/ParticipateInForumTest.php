@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Reply;
 use App\Thread;
-use App\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -17,8 +16,10 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     function unauthenticated_users_may_not_reply()
     {
+        $this->withoutExceptionHandling();
+
         $this->expectException(AuthenticationException::class);
-        $this->post('/threads/1/replies', []);
+        $this->post('/threads/1/replies/', []);
     }
 
     /** @test */
