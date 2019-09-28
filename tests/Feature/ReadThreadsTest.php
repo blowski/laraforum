@@ -2,11 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Reply;
 use App\Thread;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ThreadsTest extends TestCase
+class ReadThreadsTest extends TestCase
 {
 
     use RefreshDatabase;
@@ -39,6 +40,16 @@ class ThreadsTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee($this->thread->title);
+    }
+
+    /** @test */
+    function a_user_can_read_replies_that_are_associated_with_a_thread()
+    {
+        $reply = factory(Reply::class)->create(['thread_id'=>$this->thread->id]);
+        $response = $this->get('/threads/'.$this->thread->id);
+
+        $response->assertStatus(200);
+        $response->assertSee($reply->body);
     }
 
 
