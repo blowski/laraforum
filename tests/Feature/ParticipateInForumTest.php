@@ -17,8 +17,8 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     function unauthenticated_users_may_not_reply()
     {
-        $response = $this->post('/threads/1/replies', []);
-        $response->assertRedirect('/login');
+        $this->expectException(AuthenticationException::class);
+        $this->post('/threads/1/replies', []);
     }
 
     /** @test */
