@@ -43,12 +43,13 @@ class ThreadsController extends Controller
             'user_id' => auth()->id(),
             'title' => request('title'),
             'body' => request('body'),
+            'channel_id' => request('channel_id'),
         ]);
 
         return redirect($thread->path());
     }
 
-    public function show(Thread $thread): View
+    public function show(string $channelId, Thread $thread): View
     {
         return view('threads.show', ['thread' => $thread]);
     }

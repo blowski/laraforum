@@ -19,7 +19,7 @@ class ParticipateInForumTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->expectException(AuthenticationException::class);
-        $this->post('/threads/1/replies/', []);
+        $this->post('/threads/foo/1/replies/', []);
     }
 
     /** @test */
