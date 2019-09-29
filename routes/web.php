@@ -25,6 +25,7 @@ Route::get('/threads/create/', 'ThreadsController@create');
 Route::get('/threads/{channel}/', 'ThreadsController@index');
 Route::post('/threads/', 'ThreadsController@store');
 Route::post('/threads/{channelId}/{thread}/replies/', 'RepliesController@store');
+Route::post('/replies/{reply}/favourites/', 'FavouritesController@store');
 
 Auth::routes();
 
