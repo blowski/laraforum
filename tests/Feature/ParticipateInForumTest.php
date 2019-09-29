@@ -6,6 +6,7 @@ use App\Reply;
 use App\Thread;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class ParticipateInForumTest extends TestCase
@@ -37,5 +38,18 @@ class ParticipateInForumTest extends TestCase
 
         $this->get($thread->path())
              ->assertSee($reply->body);
+    }
+
+    /** @test */
+    function a_reply_requires_a_body(): void
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+        $this->expectException(ValidationException::class);
+
+        $thread = create(Thread::class);
+        $reply = make(Reply::class, ['body' => null]);
+
+        $this->post($thread->path().'/replies/', $reply->toArray());
     }
 }

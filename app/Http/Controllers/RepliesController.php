@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Channel;
 use App\Thread;
+use Illuminate\Http\Request;
 
 class RepliesController extends Controller
 {
@@ -12,8 +12,12 @@ class RepliesController extends Controller
         $this->middleware('auth');
     }
 
-    public function store(string $channelId, Thread $thread)
+    public function store(Request $request, string $channelId, Thread $thread)
     {
+        $this->validate($request, [
+            'body' => 'required',
+        ]);
+
         $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id(),
