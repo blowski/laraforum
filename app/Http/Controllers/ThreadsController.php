@@ -57,9 +57,12 @@ class ThreadsController extends Controller
         return redirect($thread->path());
     }
 
-    public function show(string $channelId, Thread $thread): View
+    public function show(string $channelId, Thread $thread)
     {
-        return view('threads.show', ['thread' => $thread]);
+        return view('threads.show', [
+            'thread' => $thread,
+            'replies' => $thread->replies()->paginate(5),
+        ]);
     }
 
     /**
