@@ -21,7 +21,7 @@ class ReadThreadsTest extends TestCase
     {
         parent::setUp();
 
-        $this->thread = factory(Thread::class)->create();
+        $this->thread = create(Thread::class);
     }
 
     /** @test */
@@ -75,6 +75,20 @@ class ReadThreadsTest extends TestCase
         $this->get('/threads?by=JohnDoe')
             ->assertSee($threadByJohnDoe->title)
             ->assertDontSee($threadNotByJohnDoe->title);
+    }
+
+    /** @test */
+    function a_user_can_filter_threads_by_popularity(): void
+    {
+        $threads = create(Thread::class, [], 2);
+        create(Reply::class, ['thread_id'=>$threads[0]->id], 3);
+        create(Reply::class, ['thread_id'=>$threads[1]->id], 2);
+
+        $response = $this->getJson('/threads?popular=1')->json();
+
+        // a thread with no replies is created in setUp
+
+        $this->assertEquals([3,2,0], array_column($response, 'replies_count'));
     }
 
 

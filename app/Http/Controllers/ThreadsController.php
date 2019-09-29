@@ -16,9 +16,13 @@ class ThreadsController extends Controller
         $this->middleware('auth')->except(['index','show']);
     }
 
-    public function index(ThreadFilters $filters, Channel $channel): View
+    public function index(ThreadFilters $filters, Channel $channel)
     {
         $threads = $this->getThreads($filters, $channel);
+
+        if(request()->wantsJson()) {
+            return $threads;
+        }
 
         return view('threads.index', compact('threads'));
     }
