@@ -7,7 +7,6 @@ use App\Channel;
 use App\Filters\ThreadFilters;
 use App\Thread;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class ThreadsController extends Controller
 {
