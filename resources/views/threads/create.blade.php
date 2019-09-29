@@ -11,16 +11,37 @@
                     <div class="card-body">
                         <form method="POST" action="/threads/">
                             {{ csrf_field() }}
+
+                            <div class="form-group">
+                                <label for="channel_id">Channel</label>
+                                <select name="channel_id" id="channel_id" class="form-control custom-select" required>
+                                    <option value="">-- Choose a channel --</option>
+                                    @foreach (App\Channel::all() as $channel)
+                                        <option {{ $channel->id == old('channel_id') ? 'selected ' : '' }}value="{{ $channel->id }}">{{ $channel->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="form-group">
                                 <label for="title">Title: </label>
-                                <input type="text" class="form-control" id="title" name="title">
+                                <input type="text" class="form-control" id="title" name="title" required
+                                       value="{{ old('title') }}">
                             </div>
                             <div class="form-group">
                                 <label for="body">Body:</label>
-                                <textarea class="form-control" id="body" name="body" rows="8"></textarea>
+                                <textarea class="form-control" id="body" name="body" required
+                                          rows="8">{{ old('body') }}</textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Publish</button>
                         </form>
+
+                        @if (count($errors))
+                            <ul class="alert alert-danger" style="margin-top:10px">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
                 </div>
             </div>
