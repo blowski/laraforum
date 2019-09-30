@@ -5,9 +5,12 @@ namespace Tests\Feature;
 use App\Channel;
 use App\Reply;
 use App\Thread;
+use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
@@ -93,12 +96,12 @@ class CreateThreadsTest extends TestCase
     {
         $this->signIn();
 
-        $thread = create(Thread::class);
+        $thread = create(Thread::class, ['user_id' => auth()->id()]);
         $reply = create(Reply::class, ['thread_id' => $thread->id]);
 
         $this->withoutExceptionHandling();
-        $response = $this->json('DELETE', $thread->path());
-        $response->assertStatus(204);
+        $response = $this->delete($thread->path());
+        $response->assertRedirect('/threads/');
 
         $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
         $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
@@ -111,8 +114,24 @@ class CreateThreadsTest extends TestCase
 
         $this->expectException(AuthenticationException::class);
         $this->withoutExceptionHandling();
-        $this->json('DELETE', $thread->path());
+        $this->delete($thread->path());
     }
+
+    /** @test */
+    function authenticated_users_may_not_delete_other_users_threads(): void
+    {
+        $alice = create(User::class);
+        $bob = create(User::class);
+        $bobsThread = create(Thread::class, ['user_id' => $bob->id]);
+
+        $this->signIn($alice);
+        $this->withoutExceptionHandling();
+        $this->expectException(AuthorizationException::class);
+
+        $this->delete($bobsThread->path());
+        $this->assertDatabaseHas('threads', ['id' => $bobsThread->id]);
+    }
+
 
     private function publishThread(array $overrides = []): TestResponse
     {

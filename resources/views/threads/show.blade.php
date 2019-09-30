@@ -10,7 +10,7 @@
                             <span class="flex">
                                 <a href="{{ $thread->creator->profilePath() }}">{{ $thread->creator->name }}</a> posted: {{ $thread->title }}
                             </span>
-                            <form action="{{ $thread->path() }}" method="POST">{{ csrf_field() }}{{ method_field('DELETE') }}<button type="submit" class="btn btn-danger">Delete</button></form>
+                            @can('update', $thread)<form action="{{ $thread->path() }}" method="POST">{{ csrf_field() }}{{ method_field('DELETE') }}<button type="submit" class="btn btn-danger">Delete</button></form>@endcan
                         </div>
                     </div>
                     <div class="card-body">{{ $thread->body }}</div>
