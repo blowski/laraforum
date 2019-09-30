@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Channel;
+use App\Reply;
 use App\Thread;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -85,6 +86,32 @@ class CreateThreadsTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $this->publishThread(['channel_id' => 999]);
+    }
+
+    /** @test */
+    function a_thread_can_be_deleted(): void
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class);
+        $reply = create(Reply::class, ['thread_id' => $thread->id]);
+
+        $this->withoutExceptionHandling();
+        $response = $this->json('DELETE', $thread->path());
+        $response->assertStatus(204);
+
+        $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
+        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+    }
+
+    /** @test */
+    function guests_cannot_delete_threads(): void
+    {
+        $thread = create(Thread::class);
+
+        $this->expectException(AuthenticationException::class);
+        $this->withoutExceptionHandling();
+        $this->json('DELETE', $thread->path());
     }
 
     private function publishThread(array $overrides = []): TestResponse
