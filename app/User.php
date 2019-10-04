@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return "/profiles/{$this->name}/";
     }
+
+    public function activity()
+    {
+        return $this->hasMany(Activity::class);
+    }
 }

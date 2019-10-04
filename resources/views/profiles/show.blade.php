@@ -11,15 +11,11 @@
                 <p>Since {{ $profileUser->created_at->diffForHumans() }}</p>
             </div>
 
-            @foreach ($profileUser->threads as $thread)
-                <div class="card" style="margin-top:15px">
-                    <div class="card-header">
-                        <div class="level">
-                            <h4 class="flex"><a href="{{ $thread->creator->profilePath() }}">{{ $thread->creator->name }}</a> posted: <a href="{{ $thread->path() }}">{{ $thread->title }}</a></h4>
-                        </div>
-                    </div>
-                    <div class="card-body">{{ $thread->body }}</div>
-                </div>
+            @foreach ($activities as $date => $activity)
+                <h3 class="mb-1">{{ $date }}</h3>
+                @foreach ($activity as $record)
+                    @include ("profiles.activities.{$record->type}", ['activity' => $record])
+                @endforeach
             @endforeach
 
         </div>

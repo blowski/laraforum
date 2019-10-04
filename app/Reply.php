@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string body
+ * @property Thread $thread
  */
 class Reply extends Model
 {
@@ -19,6 +20,11 @@ class Reply extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function thread(): BelongsTo
+    {
+        return $this->belongsTo(Thread::class);
     }
 
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Activity;
 use App\Thread;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,10 +25,12 @@ class ProfilesTest extends TestCase
     /** @test */
     function profiles_desplay_all_threads_created_by_the_associated_user(): void
     {
-        $user = create(User::class);
-        $thread = create(Thread::class, ['user_id' => $user->id]);
+        $this->signIn();
+        $thread = create(Thread::class, ['user_id' => auth()->id()]);
 
-        $this->get("/profiles/{$user->name}")
+        $response = $this->get("/profiles/".auth()->user()->name);
+
+        $response
             ->assertSee($thread->title)
             ->assertSee($thread->body);
     }
