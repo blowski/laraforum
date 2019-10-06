@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Reply;
 use App\Thread;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class RepliesController extends Controller
@@ -24,5 +26,15 @@ class RepliesController extends Controller
         ]);
 
         return back();
+    }
+
+    public function destroy(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+        $redirectTo = $reply->thread->path();
+
+        $reply->delete();
+
+        return redirect($redirectTo);
     }
 }
