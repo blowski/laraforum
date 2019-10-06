@@ -1907,6 +1907,12 @@ __webpack_require__.r(__webpack_exports__);
       });
       this.editing = false;
       flash('Updated');
+    },
+    destroy: function destroy() {
+      axios["delete"]('/replies/' + this.attributes.id);
+      $(this.$el).fadeOut(300, function () {
+        flash('Deleted');
+      });
     }
   }
 });
@@ -50223,7 +50229,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   staticRenderFns,
   false,
   null,
-  "8f05f2e2",
+  null,
   null
   
 )
