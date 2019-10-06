@@ -61,7 +61,7 @@ class ParticipateInForumTest extends TestCase
         $this->signIn();
         $reply = create(Reply::class, ['user_id' => auth()->id()]);
 
-        $expectedRedirectPath = $reply->thread->path();
+        $reply->thread->path();
 
         $this->delete("/replies/{$reply->id}/")->assertSuccessful();
         $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
