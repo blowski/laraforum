@@ -16,6 +16,13 @@ services:
         environment:
             PHP_IDE_CONFIG: "serverName=app"
 
+    node:
+      build:
+        context: .
+        dockerfile: docker/node/Dockerfile
+      volumes:
+        - ./:/app:cached
+
     database:
         environment:
             MYSQL_ROOT_PASSWORD: laraform
