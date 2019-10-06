@@ -25,6 +25,9 @@ class Thread extends Model
             $builder->withCount('replies');
         });
 
+        static::deleting(function(Thread $thread) {
+            $thread->replies->each->delete();
+        });
     }
 
     public function path(): string
