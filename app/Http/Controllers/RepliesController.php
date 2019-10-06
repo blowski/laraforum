@@ -40,4 +40,10 @@ class RepliesController extends Controller
         $this->authorize('update', $reply);
         $reply->update(['body' => request()->get('body')]);
     }
+
+    public function update(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+        $reply->update(['body' => request()->get('body')]);
+    }
 }

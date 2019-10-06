@@ -27,7 +27,7 @@
         <div class="card-footer">
             <div class="level">
                 <button class="btn btn-primary mr-1 btn-sm" @click="editing = true">Edit</button>
-                <button class="btn btn-danger btn-sm" @click="destroy">Delete</button>
+                <button class="btn btn-danger" @click="destroy">Delete</button>
             </div>
         </div>
         @endcan
