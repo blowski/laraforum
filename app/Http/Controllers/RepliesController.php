@@ -37,4 +37,10 @@ class RepliesController extends Controller
 
         return redirect($redirectTo);
     }
+
+    public function update(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+        $reply->update(['body' => request()->get('body')]);
+    }
 }
