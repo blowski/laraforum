@@ -47,7 +47,19 @@ class FavouritesTest extends TestCase
         } catch(QueryException $ex) {
             $this->fail("Did not expect to insert the same record twice");
         }
+    }
 
+    /** @test */
+    function an_authenticated_user_can_unfavourite_a_reply(): void
+    {
+        $this->signIn();
+
+        $reply = create(Reply::class);
+        $this->post("/replies/{$reply->id}/favourites/");
+        $this->assertCount(1, $reply->favourites);
+
+        $this->delete("/replies/{$reply->id}/favourites/");
+        $this->assertCount(0, $reply->fresh()->favourites);
     }
 
 

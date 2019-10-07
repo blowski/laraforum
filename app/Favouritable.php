@@ -14,6 +14,13 @@ trait Favouritable
         }
     }
 
+    public function unfavourite()
+    {
+        $attributes = ['user_id' => auth()->id()];
+
+        $this->favourites()->where($attributes)->delete();
+    }
+
     public function favourites()
     {
         return $this->morphMany(Favourite::class, 'favourited');
@@ -27,5 +34,10 @@ trait Favouritable
     public function isFavourited(): bool
     {
         return $this->favourites->where('user_id', auth()->id())->count() > 0;
+    }
+
+    public function getIsFavouritedAttribute()
+    {
+        return $this->isFavourited();
     }
 }
