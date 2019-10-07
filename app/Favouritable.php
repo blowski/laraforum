@@ -3,8 +3,17 @@ declare(strict_types=1);
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Model;
+
 trait Favouritable
 {
+
+    protected static function bootFavouritable()
+    {
+        static::deleting(function(Model $model) {
+            $model->favourites()->get()->each->delete();
+        });
+    }
 
     public function favourite()
     {
@@ -18,7 +27,7 @@ trait Favouritable
     {
         $attributes = ['user_id' => auth()->id()];
 
-        $this->favourites()->where($attributes)->delete();
+        $this->favourites()->where($attributes)->get()->each->delete();
     }
 
     public function favourites()
