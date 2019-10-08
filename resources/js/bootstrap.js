@@ -60,3 +60,8 @@ window.flash = function(message) {
 //     encrypted: true
 // });
 
+window.Vue.prototype.authorise = function(handler) {
+    let user = window.App.user;
+    return user ? handler(user) : false;
+};
+

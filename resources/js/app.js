@@ -22,7 +22,7 @@ window.Vue = require('vue');
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 Vue.component('flash', require('./components/Flash.vue').default);
-Vue.component('reply', require('./components/Reply.vue').default);
+Vue.component('thread-view', require('./pages/Thread').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
