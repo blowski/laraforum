@@ -19,12 +19,12 @@ class RepliesController extends Controller
             'body' => 'required',
         ]);
 
-        $thread->addReply([
+        $reply = $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id(),
         ]);
 
-        return back();
+        return $reply->load('owner');
     }
 
     public function destroy(Reply $reply)

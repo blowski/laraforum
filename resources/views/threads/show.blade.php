@@ -17,25 +17,11 @@
                         <div class="card-body">{{ $thread->body }}</div>
                     </div>
 
-                    <replies :data='@json($thread->replies)' @removed="repliesCount--"></replies>
-
-{{--                    @foreach($replies as $reply)--}}
-{{--                        @include('threads.reply')--}}
-{{--                    @endforeach--}}
-
-{{--                    <div style="margin-top:15px">{{ $replies->links() }}</div>--}}
-
-                    @if (auth()->check())
-                        <form style="margin-top:15px" action="{{ $thread->path() . '/replies/' }}" method="POST">
-                            {{ csrf_field() }}
-                            <div class="form-group">
-                                <textarea name="body" id="body" rows="5" class="form-control" placeholder="Have something to say?"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Post</button>
-                        </form>
-                    @else
-                        <p class="text-center">Please <a href="{{ route('login') }}">sign in</a> to participate in the discussion</p>
-                    @endif
+                    <replies
+                        :data='@json($thread->replies)'
+                        @removed="repliesCount--"
+                        @added="repliesCount++"
+                    ></replies>
 
                 </div>
                 <div class="col-md-4">
