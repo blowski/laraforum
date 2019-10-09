@@ -18,7 +18,6 @@
                     </div>
 
                     <replies
-                        :data='@json($thread->replies)'
                         @removed="repliesCount--"
                         @added="repliesCount++"
                     ></replies>

@@ -10,7 +10,7 @@
                 placeholder="Have something to say?"
             ></textarea>
         </div>
-        <button :endpoint="endpoint" type="button" class="btn btn-primary" @click="addReply">Post</button>
+        <button type="button" class="btn btn-primary" @click="addReply">Post</button>
     </div>
 </template>
 
@@ -19,7 +19,6 @@
         data() {
             return {
                 body: "",
-                endpoint: location.pathname + '/replies/',
             };
         },
         methods: {

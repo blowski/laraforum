@@ -3,7 +3,7 @@
         <div class="card-header">
             <div class="level">
                 <h5 class="flex">
-                    <a :href="'/profiles/'+data.owner.name" v-text="data.owner.name"></a> said {{ data.created_at }}...
+                    <a :href="'/profiles/'+data.owner.name" v-text="data.owner.name"></a> said <span v-text="ago"></span>
                 </h5>
                 <div v-if="signedIn">
                     <favourite :reply="data"></favourite>
@@ -30,6 +30,7 @@
 <script>
 
     import Favourite from './Favourite.vue';
+    import moment from 'moment';
 
     export default {
         name: "Reply",
@@ -50,6 +51,9 @@
         computed: {
             signedIn() {
                 return window.App.signedIn;
+            },
+            ago() {
+                return moment(this.data.created_at).fromNow();
             },
             canUpdate() {
                 return this.authorise(user => this.data.user_id == user.id);
