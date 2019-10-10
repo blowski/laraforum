@@ -41,6 +41,7 @@ class ParticipateInForumTest extends TestCase
         $this->assertDatabaseHas('replies', [
             'body' => $reply->body,
         ]);
+        $this->assertEquals(1, $thread->fresh()->replies_count);
     }
 
     /** @test */
@@ -60,12 +61,19 @@ class ParticipateInForumTest extends TestCase
     function authenticated_users_may_delete_their_own_replies(): void
     {
         $this->signIn();
-        $reply = create(Reply::class, ['user_id' => auth()->id()]);
+        $thread = create(Thread::class);
+        $reply = create(Reply::class, [
+            'user_id' => auth()->id(),
+            'thread_id' => $thread->id
+        ]);
+
+        self::assertEquals(1, $thread->fresh()->replies_count);
 
         $reply->thread->path();
 
         $this->delete("/replies/{$reply->id}/")->assertSuccessful();
         $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+        self::assertEquals(0, $thread->fresh()->replies_count);
     }
 
     /** @test */

@@ -92,5 +92,17 @@ class ReadThreadsTest extends TestCase
         $this->assertEquals(5, json_decode($response->content(), true)['total']);
     }
 
+    /** @test */
+    function a_user_can_filter_threads_by_those_that_are_unanswered(): void
+    {
+        $threadWithoutReplies = $this->thread;
+        $threadWithReplies = create(Thread::class);
+        create(Reply::class, ['thread_id' => $threadWithReplies->id]);
+
+    $response = $this->getJson('/threads?unanswered=1');
+        $response->assertJsonCount(1);
+        $response->assertSee($threadWithoutReplies->body);
+    }
+
 
 }
