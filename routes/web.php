@@ -33,6 +33,7 @@ Route::delete('/threads/{channel}/{thread}/', 'ThreadsController@destroy');
 Route::delete('/replies/{reply}/', 'RepliesController@destroy');
 Route::patch('/replies/{reply}/', 'RepliesController@update');
 Route::post('/threads/{channel}/{thread}/subscriptions/', 'ThreadSubscriptionsController@store')->middleware('auth');
+Route::delete('/threads/{channel}/{thread}/subscriptions/', 'ThreadSubscriptionsController@destroy')->middleware('auth');
 
 Auth::routes();
 
