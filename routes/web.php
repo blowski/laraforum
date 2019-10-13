@@ -32,6 +32,7 @@ Route::get('/profiles/{profileUser}/', 'ProfilesController@show')->name('profile
 Route::delete('/threads/{channel}/{thread}/', 'ThreadsController@destroy');
 Route::delete('/replies/{reply}/', 'RepliesController@destroy');
 Route::patch('/replies/{reply}/', 'RepliesController@update');
+Route::post('/threads/{channel}/{thread}/subscriptions/', 'ThreadSubscriptionsController@store')->middleware('auth');
 
 Auth::routes();
 
