@@ -21,7 +21,7 @@ class SubscribeToThreadsTest extends TestCase
             ->post("{$thread->path()}/subscriptions/")
             ->assertSuccessful()
         ;
-        self::assertCount(1, $thread->subscriptions);
+        self::assertCount(1, $thread->fresh()->subscriptions);
     }
 
     /** @test */

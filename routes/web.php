@@ -28,12 +28,14 @@ Route::post('/threads/{channelId}/{thread}/replies/', 'RepliesController@store')
 Route::get('/threads/{channelId}/{thread}/replies/', 'RepliesController@index');
 Route::post('/replies/{reply}/favourites/', 'FavouritesController@store');
 Route::delete('/replies/{reply}/favourites/', 'FavouritesController@destroy');
-Route::get('/profiles/{profileUser}/', 'ProfilesController@show')->name('profile');
 Route::delete('/threads/{channel}/{thread}/', 'ThreadsController@destroy');
 Route::delete('/replies/{reply}/', 'RepliesController@destroy');
 Route::patch('/replies/{reply}/', 'RepliesController@update');
 Route::post('/threads/{channel}/{thread}/subscriptions/', 'ThreadSubscriptionsController@store')->middleware('auth');
 Route::delete('/threads/{channel}/{thread}/subscriptions/', 'ThreadSubscriptionsController@destroy')->middleware('auth');
+Route::get('/profiles/{profileUser}/', 'ProfilesController@show')->name('profile');
+Route::delete('/profiles/{user}/notifications/{notificationId}/', 'UserNotificationsController@destroy');
+Route::get('/profiles/{user}/notifications/', 'UserNotificationsController@index');
 
 Auth::routes();
 
