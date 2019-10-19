@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Notifications\ThreadWasUpdated;
+use App\Providers\UserRepliedToThread;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -53,11 +53,7 @@ class Thread extends Model
     {
         $reply = $this->replies()->create($reply);
 
-        $this->subscriptions
-            ->where('user_id', '!=', $reply->user_id)
-            ->each
-            ->notify($reply)
-        ;
+        $this->notifySubscribers($reply);
 
         return $reply;
     }
@@ -83,6 +79,14 @@ class Thread extends Model
     public function subscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);
+    }
+
+    public function notifySubscribers(Reply $reply)
+    {
+        $this->subscriptions
+            ->where('user_id', '!=', $reply->user_id)
+            ->each
+            ->notify($reply);
     }
 
     public function getIsSubscribedToAttribute(): bool
