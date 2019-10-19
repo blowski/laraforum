@@ -3,10 +3,12 @@
 namespace Tests\Unit;
 
 use App\Channel;
+use App\Notifications\ThreadWasUpdated;
 use App\Thread;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ThreadTest extends TestCase
@@ -92,5 +94,18 @@ class ThreadTest extends TestCase
         self::assertFalse($thread->isSubscribedTo);
         $thread->subscribe(auth()->user());
         self::assertTrue($thread->isSubscribedTo);
+    }
+
+    /** @test */
+    function it_notifies_subscribed_users_when_somebody_replies(): void
+    {
+        Notification::fake();
+        $user = $this->signIn();
+        $this->thread->subscribe($user);
+        $this->thread->addReply([
+            'body' => 'Foo',
+            'user_id' => create(User::class),
+        ]);
+        Notification::assertSentTo(auth()->user(), ThreadWasUpdated::class);
     }
 }
