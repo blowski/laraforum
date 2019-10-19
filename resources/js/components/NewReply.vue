@@ -18,25 +18,23 @@
     export default {
         data() {
             return {
-                body: "",
+                body: ''
             };
         },
+        computed: {
+            signedIn() {
+                return window.App.signedIn;
+            }
+        },
         methods: {
-
             addReply() {
-                if(this.body == '') {
-                    return;
-                }
-                axios
-                    .post(this.endpoint, { body: this.body })
+                axios.post(location.pathname + '/replies', { body: this.body })
                     .then(({data}) => {
                         this.body = '';
+                        flash('Your reply has been posted.');
                         this.$emit('created', data);
-                        flash("Your reply has been posted");
-                    })
-                ;
+                    });
             }
-
         }
     }
 </script>
