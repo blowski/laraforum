@@ -101,4 +101,13 @@ class Thread extends Model
         return $filters->apply($query);
     }
 
+    public function hasUpdatesFor(?User $user): bool
+    {
+        if(null === $user) {
+            return false;
+        }
+
+        return $this->updated_at > cache($user->visitedThreadCacheKey($this));
+    }
+
 }

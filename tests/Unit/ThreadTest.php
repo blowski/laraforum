@@ -6,6 +6,7 @@ use App\Channel;
 use App\Notifications\ThreadWasUpdated;
 use App\Thread;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -107,5 +108,17 @@ class ThreadTest extends TestCase
             'user_id' => create(User::class),
         ]);
         Notification::assertSentTo(auth()->user(), ThreadWasUpdated::class);
+    }
+
+    /** @test */
+    function a_thread_can_check_if_a_user_has_read_all_replies(): void
+    {
+        $user = $this->signIn();
+        $thread = create(Thread::class);
+        $this->assertTrue($thread->hasUpdatesFor($user));
+
+        $user->read($thread);
+
+        $this->assertFalse($thread->hasUpdatesFor($user));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,5 +57,15 @@ class User extends Authenticatable
     public function activity()
     {
         return $this->hasMany(Activity::class);
+    }
+
+    public function read(Thread $thread): void
+    {
+        cache()->forever($this->visitedThreadCacheKey($thread), Carbon::now());
+    }
+
+    public function visitedThreadCacheKey(Thread $thread): string
+    {
+        return sprintf("users.%s.visits.%s", $this->id, $thread->id);
     }
 }
