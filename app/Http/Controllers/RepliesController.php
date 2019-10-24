@@ -19,16 +19,9 @@ class RepliesController extends Controller
         return $thread->replies()->paginate(5);
     }
 
-    public function store(Request $request, string $channelId, Thread $thread, Spam $spam)
+    public function store(Request $request, string $channelId, Thread $thread)
     {
-        $this->validate($request, [
-            'body' => 'required',
-        ]);
-
-        if($spam->detect(request('body'))) {
-            throw new \Exception("Spam detected");
-        }
-
+        $this->validateReply($request);
 
         $reply = $thread->addReply([
             'body' => request('body'),
@@ -48,7 +41,19 @@ class RepliesController extends Controller
 
     public function update(Reply $reply)
     {
-        $this->authorize('update', $reply);
+        $this->validateReply();
+
         $reply->update(['body' => request()->get('body')]);
+    }
+
+    protected function validateReply(Request $request): void
+    {
+        $this->validate($request, [
+            'body' => 'required',
+        ]);
+
+        if (resolve(Spam::class)->detect(request('body'))) {
+            throw new \Exception("Spam detected");
+        }
     }
 }
