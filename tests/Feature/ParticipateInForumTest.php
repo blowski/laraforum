@@ -152,4 +152,22 @@ class ParticipateInForumTest extends TestCase
             'body' => 'Changed body',
         ]);
     }
+
+    /** @test */
+    function replies_that_contain_spam_may_not_be_posted(): void
+    {
+        $this->signIn();
+        /** @var Thread $thread */
+        $thread = create(Thread::class);
+        /** @var Reply $reply */
+        $reply = make(Reply::class, [
+            'body' => 'Yahoo Customer Support',
+        ]);
+
+        $this->withoutExceptionHandling();
+
+        $this->expectException(\Exception::class);
+
+        $this->post($thread->path() . '/replies', $reply->toArray());
+    }
 }
