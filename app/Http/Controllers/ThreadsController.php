@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Filters\ThreadFilters;
+use App\Inspections\Spam;
 use App\Thread;
 use App\User;
 use Carbon\Carbon;
@@ -38,19 +39,16 @@ class ThreadsController extends Controller
         return view('threads.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request, Spam $spam)
     {
         $this->validate($request, [
             'title' => 'required',
             'body' => 'required',
             'channel_id' => 'required|exists:channels,id',
         ]);
+        if($spam->detect(request('body')) || $spam->detect(request('title'))) {
+            throw new \Exception("Spam detected");
+        }
 
         $thread = Thread::create([
             'user_id' => auth()->id(),
