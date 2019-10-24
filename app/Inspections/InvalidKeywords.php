@@ -1,29 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace App;
+namespace App\Inspections;
 
-class Spam
+class InvalidKeywords implements Inspector
 {
-    public function detect(string $body): bool
-    {
-        return $this->detectInvalidKeywords($body);
-    }
-
-    private function detectInvalidKeywords(string $body): bool
+    public function inspect(string $string): bool
     {
         $invalidKeywords = [
             'yahoo customer support',
         ];
 
         foreach($invalidKeywords as $keyword) {
-            if(stristr($body, $keyword)) {
+            if(stristr($string, $keyword)) {
                 return true;
             }
         }
 
         return false;
     }
-
-
 }
