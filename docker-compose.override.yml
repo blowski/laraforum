@@ -29,3 +29,5 @@ services:
         ports:
         - "42333:3306"
         restart: always
+        volumes:
+          - ./mysql-data:/var/lib/mysql:delegated

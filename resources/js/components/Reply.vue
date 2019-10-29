@@ -62,11 +62,21 @@
 
         methods: {
             update() {
-                axios.patch('/replies/'+this.data.id, {
-                    body: this.body
-                });
-                this.editing = false;
-                flash('Updated');
+                axios
+                    .patch('/replies/'+this.data.id, {
+                        body: this.body
+                    })
+                    .then(
+                        response => {
+                            this.editing = false;
+                            flash('Updated');
+                        },
+                        error => {
+                            flash(error.response.data, 'danger');
+                        }
+                    )
+                ;
+
             },
             destroy() {
                 axios.delete('/replies/'+this.data.id);
