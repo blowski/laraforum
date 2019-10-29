@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
-use App\Inspections\Spam;
+use App\Rules\SpamFree;
 use App\Thread;
+use Illuminate\Validation\ValidationException;
 
 class RepliesController extends Controller
 {
@@ -21,13 +22,15 @@ class RepliesController extends Controller
     public function store(string $channelId, Thread $thread)
     {
         try {
-            $this->validateReply();
+            $this->validate(request(), [
+                'body' => ['required', new SpamFree()],
+            ]);
             $reply = $thread->addReply([
                 'body' => request('body'),
                 'user_id' => auth()->id(),
             ]);
-        } catch (\Exception $e) {
-            return response('Sorry your reply could not be saved at this time', 422);
+        } catch(ValidationException $exception) {
+            return response(['message' => 'Your reply was not valid'], 422);
         }
 
         return $reply->load('owner');
@@ -44,23 +47,16 @@ class RepliesController extends Controller
     public function update(Reply $reply)
     {
         try {
-            $this->validateReply();
-            $this->authorize('update', $reply);
-        } catch (\Exception $e) {
-            return response('Sorry your reply could not be saved at this time', 422);
+            $this->validate(request(), [
+                'body' => ['required', new SpamFree()],
+            ]);
+        } catch(ValidationException $exception) {
+            return response(['message' => 'Your reply was not valid'], 422);
         }
+
+        $this->authorize('update', $reply);
 
         $reply->update(['body' => request()->get('body')]);
     }
 
-    protected function validateReply(): void
-    {
-        $this->validate(request(), [
-            'body' => 'required',
-        ]);
-
-        if (resolve(Spam::class)->detect(request('body'))) {
-            throw new \Exception("Spam detected");
-        }
-    }
 }

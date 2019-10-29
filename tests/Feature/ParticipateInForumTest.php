@@ -49,12 +49,12 @@ class ParticipateInForumTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->signIn();
-        $this->expectException(ValidationException::class);
 
         $thread = create(Thread::class);
         $reply = make(Reply::class, ['body' => null]);
 
         $this->post($thread->path().'/replies/', $reply->toArray());
+        $this->assertCount(0, $thread->fresh()->replies);
     }
 
     /** @test */
@@ -164,10 +164,7 @@ class ParticipateInForumTest extends TestCase
             'body' => 'Yahoo Customer Support',
         ]);
 
-        $this->withoutExceptionHandling();
-
-        $this->expectException(\Exception::class);
-
         $this->post($thread->path() . '/replies', $reply->toArray());
+        $this->assertCount(0, $thread->replies);
     }
 }

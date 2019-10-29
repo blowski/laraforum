@@ -6,10 +6,12 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Filters\ThreadFilters;
 use App\Inspections\Spam;
+use App\Rules\SpamFree;
 use App\Thread;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ThreadsController extends Controller
 {
@@ -41,14 +43,11 @@ class ThreadsController extends Controller
 
     public function store(Request $request, Spam $spam)
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'body' => 'required',
+        $errors = $this->validate($request, [
+            'title' => ['required', new SpamFree()],
+            'body' => ['required', new SpamFree()],
             'channel_id' => 'required|exists:channels,id',
         ]);
-        if($spam->detect(request('body')) || $spam->detect(request('title'))) {
-            throw new \Exception("Spam detected");
-        }
 
         $thread = Thread::create([
             'user_id' => auth()->id(),
@@ -57,7 +56,10 @@ class ThreadsController extends Controller
             'channel_id' => request('channel_id'),
         ]);
 
-        return redirect($thread->path())->with('flash', 'Your thread has been published');
+        return redirect($thread->path())
+            ->with('flash', 'Your thread has been published')
+            ->withErrors($errors)
+        ;
     }
 
     public function show(string $channelId, Thread $thread)

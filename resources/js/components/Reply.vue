@@ -72,7 +72,7 @@
                             flash('Updated');
                         },
                         error => {
-                            flash(error.response.data, 'danger');
+                            flash(error.response.data.message, 'danger');
                         }
                     )
                 ;
