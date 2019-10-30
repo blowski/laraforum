@@ -167,4 +167,22 @@ class ParticipateInForumTest extends TestCase
         $this->post($thread->path() . '/replies', $reply->toArray());
         $this->assertCount(0, $thread->replies);
     }
+
+    /** @test */
+    function users_may_only_reply_once_per_minute(): void
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+
+        $thread = create(Thread::class);
+        $reply = make(Reply::class, [
+            'body' => 'My simple reply',
+        ]);
+
+        $this->post($thread->path() . '/replies/', $reply->toArray())
+            ->assertSuccessful();
+        $this->post($thread->path() . '/replies/', $reply->toArray())
+            ->assertStatus(422)
+            ->assertSee('You are posting too frequently');
+    }
 }
