@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatePostRequest;
 use App\Reply;
 use App\Rules\SpamFree;
 use App\Thread;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 class RepliesController extends Controller
@@ -21,23 +20,12 @@ class RepliesController extends Controller
         return $thread->replies()->paginate(5);
     }
 
-    public function store(string $channelId, Thread $thread)
+    public function store(string $channelId, Thread $thread, CreatePostRequest $form)
     {
-        try {
-            if(Gate::denies('create', new Reply)) {
-                return response('You are posting too frequently', 422);
-            }
-            $this->authorize('create', new Reply);
-            $this->validate(request(), [
-                'body' => ['required', new SpamFree()],
-            ]);
-            $reply = $thread->addReply([
-                'body' => request('body'),
-                'user_id' => auth()->id(),
-            ]);
-        } catch(ValidationException $exception) {
-            return response(['message' => 'Your reply was not valid'], 422);
-        }
+        $reply = $thread->addReply([
+            'body' => request('body'),
+            'user_id' => auth()->id(),
+        ]);
 
         return $reply->load('owner');
     }
@@ -52,15 +40,12 @@ class RepliesController extends Controller
 
     public function update(Reply $reply)
     {
-        try {
-            $this->validate(request(), [
-                'body' => ['required', new SpamFree()],
-            ]);
-        } catch(ValidationException $exception) {
-            return response(['message' => 'Your reply was not valid'], 422);
-        }
-
         $this->authorize('update', $reply);
+
+        $this->validate(request(), [
+            'body' => ['required', new SpamFree()],
+        ]);
+
 
         $reply->update(['body' => request()->get('body')]);
     }

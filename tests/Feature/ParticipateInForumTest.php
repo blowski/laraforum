@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
@@ -28,6 +29,7 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     function an_authenticated_user_may_participate_in_forum_threads()
     {
+        $this->withoutExceptionHandling();
         $this->signIn();
 
         /** @var Thread $thread */
@@ -53,6 +55,7 @@ class ParticipateInForumTest extends TestCase
         $thread = create(Thread::class);
         $reply = make(Reply::class, ['body' => null]);
 
+        $this->expectException(ValidationException::class);
         $this->post($thread->path().'/replies/', $reply->toArray());
         $this->assertCount(0, $thread->fresh()->replies);
     }
@@ -161,7 +164,7 @@ class ParticipateInForumTest extends TestCase
         $thread = create(Thread::class);
         /** @var Reply $reply */
         $reply = make(Reply::class, [
-            'body' => 'Yahoo Customer Support',
+            'body' => 'aaaaaaa',
         ]);
 
         $this->post($thread->path() . '/replies', $reply->toArray());
@@ -181,8 +184,8 @@ class ParticipateInForumTest extends TestCase
 
         $this->post($thread->path() . '/replies/', $reply->toArray())
             ->assertSuccessful();
-        $this->post($thread->path() . '/replies/', $reply->toArray())
-            ->assertStatus(422)
-            ->assertSee('You are posting too frequently');
+
+        $this->expectException(ThrottleRequestsException::class);
+        $this->post($thread->path() . '/replies/', $reply->toArray());
     }
 }

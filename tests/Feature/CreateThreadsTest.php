@@ -49,23 +49,25 @@ class CreateThreadsTest extends TestCase
     /** @test */
     function a_thread_requires_a_title(): void
     {
+        $this->withoutExceptionHandling();
         $this->signIn();
 
         $thread = make(Thread::class, ['title' => null]);
+        $this->expectException(ValidationException::class);
 
-        $this->post('/threads/', $thread->toArray())
-            ->assertSessionHasErrors();
+        $this->post('/threads/', $thread->toArray());
     }
 
     /** @test */
     function a_thread_requires_a_body(): void
     {
+        $this->withoutExceptionHandling();
         $this->signIn();
 
         $thread = make(Thread::class, ['body' => null]);
+        $this->expectException(ValidationException::class);
 
-        $this->post('/threads/', $thread->toArray())
-            ->assertSessionHasErrors();
+        $this->post('/threads/', $thread->toArray());
     }
 
     /** @test */
