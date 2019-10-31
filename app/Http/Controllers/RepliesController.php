@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
+use App\Notifications\YouWereMentioned;
 use App\Reply;
 use App\Rules\SpamFree;
 use App\Thread;
+use App\User;
 use Illuminate\Validation\ValidationException;
 
 class RepliesController extends Controller
@@ -26,6 +28,13 @@ class RepliesController extends Controller
             'body' => request('body'),
             'user_id' => auth()->id(),
         ]);
+
+        preg_match_all('/\@([^\s\.]+)/', $reply->body, $matches);
+        foreach($matches[1] as $name) {
+            if($user = User::whereName($name)->first()) {
+                $user->notify(new YouWereMentioned($reply));
+            }
+        }
 
         return $reply->load('owner');
     }
