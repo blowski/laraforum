@@ -1,4 +1,4 @@
-FROM nginx:1.15 as app-nginx
+FROM nginx:1.16 as app-nginx
 WORKDIR /app/public
 ADD ./docker/web/default.conf /etc/nginx/conf.d/default.conf
 

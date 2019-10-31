@@ -28,7 +28,7 @@ $factory->define(User::class, function (Faker $faker) {
     ];
 });
 
-$factory->define(Thread::class, function($faker) {
+$factory->define(Thread::class, function(Faker $faker) {
     return [
         'user_id' => function() {
             return factory(User::class)->create()->id;
@@ -36,12 +36,12 @@ $factory->define(Thread::class, function($faker) {
         'channel_id' => function() {
             return factory(Channel::class)->create()->id;
         },
-        'title' => $faker->sentence,
-        'body' => $faker->paragraph,
+        'title' => ucfirst($faker->word) . $faker->words(random_int(3, 10), true) . '.',
+        'body' => ucfirst($faker->word) . $faker->words(random_int(10, 50), true) . '.',
     ];
 });
 
-$factory->define(Reply::class, function($faker) {
+$factory->define(Reply::class, function(Faker $faker) {
     return [
         'user_id' => function() {
             return factory(User::class)->create()->id;
@@ -49,7 +49,7 @@ $factory->define(Reply::class, function($faker) {
         'thread_id' => function() {
             return factory(Thread::class)->create()->id;
         },
-        'body' => $faker->paragraph,
+        'body' => ucfirst($faker->word) . $faker->words(random_int(10, 50), true) . '.',
     ];
 });
 
