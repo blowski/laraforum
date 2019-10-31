@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Notifications\YouWereMentioned;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,5 +52,12 @@ class Reply extends Model
     public function wasJustPublished()
     {
         return $this->created_at->gt(Carbon::now()->subSeconds(3));
+    }
+
+    public function getMentionedUsers()
+    {
+        preg_match_all('/\@([^\s\.]+)/', $this->body, $matches);
+        return $matches[1];
+
     }
 }

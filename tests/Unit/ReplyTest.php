@@ -31,4 +31,17 @@ class ReplyTest extends TestCase
         ]);
         $this->assertFalse($reply->wasJustPublished());
     }
+
+    /** @test */
+    function it_can_detect_all_mentioned_users_in_the_body(): void
+    {
+        $reply = create(Reply::class, [
+            'body' => '@alice wants to talk to @bob'
+        ]);
+        $mentioendUsers = $reply->getMentionedUsers();
+        $this->assertCount(2, $mentioendUsers);
+        $this->assertContains('alice', $mentioendUsers);
+        $this->assertContains('bob', $mentioendUsers);
+
+    }
 }
